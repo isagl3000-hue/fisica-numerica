@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# Archivos temporales
+*.tmp
+*.temp
+*.log
+
+# Configuración de editores
+.vscode/
+.idea/
+.spyderproject
+
+# Sistema
+.DS_Store
+Thumbs.db

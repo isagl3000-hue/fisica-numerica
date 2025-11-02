@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Sep 11 21:33:28 2025
+
+@author: isaias-gl
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parámetros
+xmin = -3
+xmax = 5
+N_max = 1000  # Reducido para mejor rendimiento
+
+def f(x):  # Función a integrar
+    return 1 - x - 4*x**3 + 3*x**5
+
+# Valor real de la integral (calculado analíticamente)
+def integral_real(x):
+    return x - x**2/2 - x**4 + x**6/2
+valor_real = integral_real(xmax) - integral_real(xmin)
+
+def simpson(f, xmax, xmin, N):
+    if N < 3 or N % 2 == 0:  # Simpson requiere N impar y >= 3
+        N = max(3, N if N % 2 == 1 else N + 1)
+    
+    ancho = (xmax - xmin) / (N - 1)
+    x = np.linspace(xmin, xmax, N)
+    y = f(x)
+    
+    s = y[0] + y[-1]
+    s += 4 * np.sum(y[1:-1:2])  # términos pares
+    s += 2 * np.sum(y[2:-2:2])  # términos impares
+    
+    return (ancho / 3) * s
+
+def trapecio(f, xmax, xmin, N):
+    ancho = (xmax - xmin) / (N - 1)
+    x = np.linspace(xmin, xmax, N)
+    y = f(x)
+    
+    s = (y[0] + y[-1]) / 2
+    s += np.sum(y[1:-1])
+    
+    return ancho * s
+
+# Calcular convergencia de manera eficiente
+subdivisiones = np.arange(3, N_max + 1, 2)  # Solo números impares para Simpson
+simpson_vals = []
+trapecio_vals = []
+
+print("Calculando convergencia...")
+for i, n in enumerate(subdivisiones):
+    if i % 100 == 0:  # Mostrar progreso
+        print(f"Procesando {i}/{len(subdivisiones)}")
+    
+    simpson_vals.append(simpson(f, xmax, xmin, n))
+    trapecio_vals.append(trapecio(f, xmax, xmin, n))
+
+# Crear gráficas
+plt.figure(figsize=(12, 8))
+
+# Gráfica 1: Valores de las aproximaciones
+plt.subplot(2, 1, 1)
+plt.plot(subdivisiones, simpson_vals, 'b-', label='Simpson', alpha=0.7)
+plt.plot(subdivisiones, trapecio_vals, 'r-', label='Trapecio', alpha=0.7)
+plt.axhline(y=valor_real, color='g', linestyle='--', label='Valor Real')
+plt.xlabel('Número de Subdivisiones')
+plt.ylabel('Valor de la Integral')
+plt.title('Convergencia de Métodos de Integración')
+plt.legend()
+plt.grid(True)
+
+# Gráfica 2: Error absoluto
+plt.subplot(2, 1, 2)
+error_simpson = np.abs(np.array(simpson_vals) - valor_real)
+error_trapecio = np.abs(np.array(trapecio_vals) - valor_real)
+
+plt.semilogy(subdivisiones, error_simpson, 'b-', label='Error Simpson', alpha=0.7)
+plt.semilogy(subdivisiones, error_trapecio, 'r-', label='Error Trapecio', alpha=0.7)
+plt.xlabel('Número de Subdivisiones')
+plt.ylabel('Error Absoluto (escala log)')
+plt.title('Error de Aproximación')
+plt.legend()
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
+
+# Resultados finales
+print(f"\nValor real de la integral: {valor_real:.6f}")
+print(f"Simpson (N={N_max}): {simpson_vals[-1]:.6f}, Error: {error_simpson[-1]:.2e}")
+print(f"Trapecio (N={N_max}): {trapecio_vals[-1]:.6f}, Error: {error_trapecio[-1]:.2e}")
