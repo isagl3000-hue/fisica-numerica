@@ -15,7 +15,7 @@ import matplotlib.animation as anim
 # =============================================================================
 L = 1.0           # Longitud de la cuerda (m)
 T = 100.0         # Tensión (N)
-rho = 5.0         # Densidad lineal (kg/m)
+rho = 1.0         # Densidad lineal (kg/m)
 c = np.sqrt(T/rho) # Velocidad de la onda (m/s)
 
 print("=== PROBLEMA 3: VIBRACIÓN DE CUERDA ===")
