@@ -8,6 +8,7 @@ Created on Thu Nov 20 11:08:25 2025
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def simulacion_embarazo(n_simulaciones):
     """
@@ -71,6 +72,8 @@ tabla_resultados = pd.DataFrame(resultados)
 print("TABLA DE RESULTADOS")
 print("=" * 40)
 print(tabla_resultados.to_string(index=False, float_format='%.4f'))
+
+
 
 
 
